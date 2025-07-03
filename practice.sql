@@ -108,3 +108,6 @@ ADD  email VARCHAR(100) NOT NULL;
 ALTER TABLE persons
 DROP birthdate
 
+
+DROP TABLE house
+DROP TABLE persons
