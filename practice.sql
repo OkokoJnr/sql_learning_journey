@@ -100,3 +100,11 @@ CREATE TABLE house(
 )
 
 SELECT * FROM house
+
+--add a new column to the persons table
+ALTER TABLE persons
+ADD  email VARCHAR(100) NOT NULL;
+
+ALTER TABLE persons
+DROP birthdate
+
