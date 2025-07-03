@@ -76,5 +76,27 @@ FROM customers
 ORDER BY score DESC;
 
 
-SELECT * FROM orders LIMIT 2;
 
+
+--CHAPTER 2
+-- DATA DEFINITION LANGUAGE (DDL)
+--Create a new table of Persons with columns: id, persona_name, birthdate, phone
+
+CREATE TABLE persons(
+    id INT NOT NULL,
+    persons_name VARCHAR NOT NULL,
+    birthdate DATE,
+    phone VARCHAR NOT NULL,
+    CONSTRAINT persons_id PRIMARY KEY (id)
+)
+
+SELECT * FROM persons
+CREATE TABLE house(
+    id INT NOT NULL,
+    address VARCHAR(100) NOT NULL,
+    state VARCHAR(50) NOT NULL,
+    house_type VARCHAR (50),
+    CONSTRAINT house_id PRIMARY KEY (id)
+)
+
+SELECT * FROM house
