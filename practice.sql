@@ -111,3 +111,98 @@ DROP birthdate
 
 DROP TABLE house
 DROP TABLE persons
+
+--DATA MANIPULATION LANGUAGE
+--INSERT
+INSERT INTO customers (id, first_name, country, score) VALUES
+    (6, 'Anna', 'Germany', 600),
+    (7, 'Tom', 'USA', 800);
+
+--Create a persons
+CREATE TABLE persons(
+    id INT NOT NULL,
+    name VARCHAR(50),
+    birthDate DATE,
+    phone VARCHAR(15) NOT NULL,
+    CONSTRAINT persons_id PRIMARY KEY(id)
+)
+DROP TABLE persons
+ 
+SELECT * FROM persons
+
+INSERT INTO persons(id, name, birthDate, phone)
+VALUES (9, 'Emmanuel', '01-12-2005', '07772298342'),
+(12, 'Felicia', '05-12-2005', '08065326723'),
+(10, 'John', '01-1-2005', '091664872922'),
+(11, 'Clement', '06-2-2005', '0815466565')
+
+--insert data from persons  table to customers table
+INSERT INTO customers
+SELECT 
+    id, 
+    name, 
+    NULL,
+    NULL 
+FROM persons
+
+SELECT * from customers
+
+
+CREATE TABLE students(
+    id INT NOT NULL,
+    name VARCHAR(50) NOT NULL,
+    birthdate DATE,
+    class VARCHAR(50) NOT NULL,
+    email VARCHAR(50) NOT NULL,
+    phone VARCHAR(15),
+    CONSTRAINT students_id PRIMARY KEY(id)
+)
+
+drop TABLE students
+INSERT INTO students(id, name, birthdate, class, email)
+VALUES (1, 'Emmanuel', '2009-01-12', 'SS3', 'Emmanuel12@m.com'),
+(2, 'Felicia', '2005-05-12', 'SS1', 'Felicia71@j.ng'),
+(3, 'John', '2007-01-01', 'SS2', 'John17@j.ng'),
+(4, 'Clement', '2012-06-02', 'SS1', 'Clement12@n.ng');
+
+select * from students
+
+CREATE TABLE applicants(
+    id INT NOT NULL,
+    name VARCHAR(50) NOT NULL,
+    class VARCHAR(15) NOT NULL,
+    birthdate DATE  
+)
+
+INSERT INTO applicants(id, name, class, birthdate)
+VALUES (5, 'Emmanuel', 'SS3', '2009-01-12'),
+(6, 'Felicia', 'SS1', '2005-05-12'),
+(7, 'John', 'SS2', '2007-01-01'),
+(8, 'Clement', 'SS1', '2012-06-02');
+
+
+
+INSERT INTO students (id, name, birthdate, class, email)
+SELECT 
+id, name, birthdate, class, 'unknown'
+ FROM applicants
+
+SELECT * from customers WHERE country = NULL
+
+UPDATE students
+SET birthdate = '2013-05-12'
+where id = 6
+
+UPDATE customers
+SET country = 'UK'
+where country IS NULL
+
+select  COUNT(id) as total_customer from customers
+
+DELETE FROM students
+WHERE id in (4,5,7);
+
+SELECT * FROM students;
+
+--USING TRUNCATE
+TRUNCATE TABLE students;
