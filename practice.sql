@@ -206,3 +206,18 @@ SELECT * FROM students;
 
 --USING TRUNCATE
 TRUNCATE TABLE students;
+
+/*INTERMEDIATE LEVEL
+        FILTERING DATA
+        (
+        cOMPARISON OPEARTOR, LOGICAL OPERATORE, RANGE OPERATOR, MEMBERSIP OPERATOR, SEARC OPERATOR
+        )
+        */
+
+SELECT * FROM customers WHERE country = 'USA' AND score > 500
+
+SELECT * FROM customers WHERE NOT country = 'USA' OR score > 500
+
+SELECT * from customers WHERE country like '%N%'
+
+SELECT * FROM customers where id in (1,2,3,5,8,9)
