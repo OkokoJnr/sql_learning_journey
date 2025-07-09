@@ -221,3 +221,44 @@ SELECT * FROM customers WHERE NOT country = 'USA' OR score > 500
 SELECT * from customers WHERE country like '%N%'
 
 SELECT * FROM customers where id in (1,2,3,5,8,9)
+
+--JOIN
+-- Inner Join
+SELECT * 
+FROM customers AS c 
+INNER JOIN orders AS o
+ON c.id = o.customer_id 
+
+--Left Join
+SELECT * FROM customers as C 
+LEFT JOIN orders AS o 
+ON c.id = o.customer_id
+
+--Right Join
+SELECT * FROM customers as c
+RIGHT JOIN orders AS O
+ON c.id = o.customer_id
+
+--Full Join
+SELECT * FROM customers AS c
+FULL JOIN orders AS o
+ON c.id = o.customer_id
+
+--Anti Left Join
+--Retrieve all customers that have not placed any order
+SELECT * FROM customers AS c 
+LEFT JOIN orders AS o 
+ON c.id = o.customer_id
+WHERE o.customer_id IS NULL
+
+
+INSERT INTO orders(order_id, customer_id, order_date, sales)
+VALUES (1015, 22, '2009-01-12', 41),
+(10026, 32, '2005-05-12', 21)
+
+--Anti Right Join
+--Retrieve others without customers
+SELECT * FROM customers AS c 
+RIGHT JOIN orders AS o 
+ON c.id = o.customer_id
+WHERE c.id IS NULL
