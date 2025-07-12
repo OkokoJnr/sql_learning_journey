@@ -262,3 +262,60 @@ SELECT * FROM customers AS c
 RIGHT JOIN orders AS o 
 ON c.id = o.customer_id
 WHERE c.id IS NULL
+
+--SET OPERATIONS
+
+SELECT order_id, customer_id,order_date, sales FROM orders
+UNION
+SELECT orderid, customerid,orderdate, sales FROM sales.orders
+ORDER BY order_id
+
+SELECT order_id, customer_id,order_date, sales FROM orders
+UNION ALL
+SELECT orderid, customerid,orderdate, sales FROM sales.orders
+ORDER BY order_id
+
+
+SELECT order_id, customer_id,order_date, sales FROM orders
+EXCEPT
+SELECT orderid, customerid,orderdate, sales FROM sales.orders
+ORDER BY order_id
+
+
+SELECT * FROM sales.customers
+
+SELECT birthdate, 
+    DATEADD('yyyy', 4, birthdate) 
+ FROM sales.employees
+
+SELECT 
+orderid,
+orderdate,
+LAG(orderdate) OVER( ) AS prevDate
+FROM sales.orders
+where orderid>2
+
+
+
+SELECT ISDATE(12) as datecheck
+
+
+SELECT * from customers
+
+DELETE FROM customers 
+WHERE id in (12, 10, 11, 9)
+
+INSERT INTO customers(id, first_name, country)
+VALUES (12, 'Clement', 'Malaysia'), 
+(11, 'Emmanuel', 'Malaysaia')
+
+
+ALTER TABLE customers
+ADD last_name VARCHAR(50) 
+
+UPDATE customers
+SET last_name = 'Sunny'
+WHERE id = 7
+
+
+SELECT 'Okoo' + 'hjhjh'

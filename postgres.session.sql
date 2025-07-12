@@ -53,3 +53,29 @@ INSERT INTO orders (order_id, customer_id, order_date, sales) VALUES
 
 SELECT * FROM orders
 SELECT * FROM customers
+
+INSERT INTO orders(order_id, customer_id,  sales) VALUES(
+    1101, 23, 45
+)
+
+SELECT coalesce(order_date, '2024--12-01') FROM orders
+
+SELECT 
+score,
+    CASE
+    WHEN score < 400 THEN 'Low'
+    WHEN score < 600 THEN 'Medium'
+    ELSE 'Very High'
+    END
+ FROM customers
+ 
+SELECT 
+    CASE 
+        WHEN sales < 20 THEN 'Low'
+        WHEN sales < 30 THEN 'Medium'
+        WHEN sales >30 THEN 'High'
+    END as category,
+    SUM( sales) AS total_sales
+ FROM orders
+ GROUP BY category
+ ORDER BY total_sales DESC

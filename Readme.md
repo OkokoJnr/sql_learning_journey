@@ -24,3 +24,9 @@ INTERMEDIATE LEVEL
         (
                 INNER JOIBN, LEFT JOIN, RIGHT JOIN, FULL JOIN, ANTI JOIN
         )
+
+        SET OPERATIONS -Combining Data Rows using SET Operations. Operations covered include:
+                UNION
+                UNION ALL
+                INTERSECT
+                EXCEPT
