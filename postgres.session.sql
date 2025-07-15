@@ -45,14 +45,13 @@ CREATE TABLE orders (
 
 -- Insert orders data
 INSERT INTO orders (order_id, customer_id, order_date, sales) VALUES
-    (1001, 1, '2021-01-11', 35),
-    (1002, 2, '2021-04-05', 15),
-    (1003, 3, '2021-06-18', 20),
-    (1004, 6, '2021-08-31', 10);
+    (111, 1, '2021-01-11', 32),
+    (1121, 3, '2021-06-18', 67),
+    (1421, 22, '2021-06-18', 53),
+    (3121, 23, '2021-06-18', 63),
+    (10021, 2, '2021-06-18', 43),
+    (1211, 6, '2021-08-31', 58);
 
-
-SELECT * FROM orders
-SELECT * FROM customers
 
 INSERT INTO orders(order_id, customer_id,  sales) VALUES(
     1101, 23, 45
@@ -79,3 +78,121 @@ SELECT
  FROM orders
  GROUP BY category
  ORDER BY total_sales DESC
+
+
+
+
+SELECT 
+    customer_id,
+    COUNT(order_id)
+FROM orders
+WHERE sales > 30
+GROUP BY customer_id
+ORDER BY customer_id
+
+
+SELECT 
+    customer_id,
+    SUM(CASE
+        WHEN sales > 30 THEN 1
+        ELSE 0
+        END ) AS countHighSales,
+        COUNT(*)
+FROM 
+    orders
+GROUP BY customer_id
+
+
+SELECT 
+order_id,
+customer_id,
+sales,
+SUM(sales) OVER()
+ FROM orders
+
+--Total Sales for EAch product and provide other details like other id, order date
+ SELECT
+ productid,
+ orderstatus
+ orderid,
+ orderdate,
+ sales,
+ SUM(sales) OVER() TotalSales,
+ SUM(sales) OVER(PARTITION BY productid),
+ SUM(sales) OVER(PARTITION BY productid, orderstatus) TotalSalesByProduct
+ FROM sales.orders
+
+ select orderstatus, productid,
+ SUM(sales) over(PARTITION BY orderstatus)
+ from sales.orders
+
+--Rank other base on sales
+SELECT 
+    orderid,
+    orderstatus,
+    orderdate,
+    Sales,
+    Rank() OVER(PARTITION BY orderstatus ORDER BY sales DESC) AS sales_rank
+FROM
+sales.orders
+
+--WINDOW FRAME
+SELECT 
+    productid,
+    sales ,
+    orderstatus,
+    SUM(sales) OVER() total_sales,
+    SUM(sales) OVER(
+        PARTITION BY productid 
+        ORDER BY orderdate 
+        ROWS BETWEEN UNBOUNDED PRECEDING AND 3 FOLLOWING) total_salesROWS
+FROM sales.orders
+
+SELECT 
+  productid,
+  sales,
+  SUM(sales) OVER (
+    PARTITION BY productid 
+    ORDER BY orderdate
+    ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+  ) AS running_total
+FROM sales.orders;
+
+
+
+SELECT
+productid,
+orderid,
+customerid,
+sales,
+--SUM(sales) OVER() as total_sum,
+--SUM(Sales) OVER(ORDER BY orderid ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) sum_1,
+--SUM(sales) OVER(ORDER BY orderid ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) sum_last,
+
+SUM(sales) OVER( ORDER BY orderid ROWS BETWEEN CURRENT ROW AND 1 FOLLOWING) as sum_sum,
+SUM(sales) OVER( ORDER BY productid ROWS BETWEEN CURRENT ROW AND 1 FOLLOWING) as sum_sum
+FROM sales.orders
+
+SELECT
+  orderid,
+  productid,
+  customerid,
+  sales,
+  SUM(sales) OVER() AS total_sum,
+  SUM(sales) OVER(ORDER BY orderid ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS full_window_sum,
+  SUM(sales) OVER(ORDER BY orderid ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS running_total,
+  SUM(sales) OVER(PARTITION BY productid ORDER BY orderid ROWS BETWEEN CURRENT ROW AND 1 FOLLOWING) AS moving_sum
+FROM sales.orders;
+
+
+--Rank customers base on their total sales
+SELECT customerid, c2.first_name, c2.last_name, c1.customer_tot_sales, c1.sales_rank FROM ( SELECT 
+ customerid,
+ rank() OVER(ORDER BY SUM(sales) DESC) AS sales_rank,
+ SUM(sales) AS customer_tot_sales
+ FROM sales.orders
+ GROUP BY customerid
+ ) as c1
+ LEFT JOIN customers as c2
+ ON c1.customerid = c2.id
+ORDER BY sales_rank
