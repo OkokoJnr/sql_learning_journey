@@ -196,3 +196,15 @@ SELECT customerid, c2.first_name, c2.last_name, c1.customer_tot_sales, c1.sales_
  LEFT JOIN customers as c2
  ON c1.customerid = c2.id
 ORDER BY sales_rank
+
+--checking for duplicates
+SELECT
+* from sales.ordersarchive
+
+SELECT orderid, COUNT(orderid) FROM sales.ordersarchive
+GROUP BY orderid
+HAVING COUNT(orderid) > 1;
+ --HAVING COUNT(*) > 1);
+
+ SELECT orderid, count(*) OVER(PARTITION BY orderid) AS order_count
+  FROM sales.ordersarchive
