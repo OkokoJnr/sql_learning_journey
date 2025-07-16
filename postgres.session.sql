@@ -232,3 +232,16 @@ SELECT
     DENSE_RANK() OVER(order by sales) sales_dense_rank
     
  FROM orders
+
+--TOP-N- ANALYSIS: top highest sales per product
+
+SELECT * 
+FROM (
+    SELECT 
+    productid,
+    sales,
+    ROW_NUMBER() OVER(PARTITION BY productid ORDER BY sales DESC) sales_rank
+FROM
+sales.ordersarchive
+)t
+WHERE sales_rank <= 3;
