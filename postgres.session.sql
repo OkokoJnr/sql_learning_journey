@@ -208,3 +208,27 @@ HAVING COUNT(orderid) > 1;
 
  SELECT orderid, count(*) OVER(PARTITION BY orderid) AS order_count
   FROM sales.ordersarchive
+
+  --All orders wheresales are higher than the average sales across all orders
+
+SELECT * FROM (
+      SELECT 
+  order_id,
+  sales,
+  AVG(sales) OVER() avg_sales
+  FROM orders
+)t
+
+where sales > avg_sales
+
+
+--window_Rank
+
+SELECT 
+    order_id oid,
+    sales,
+    ROW_NUMBER() OVER(ORDER BY sales) sales_rn,
+    RANK() OVER(order by sales) sales_rank,
+    DENSE_RANK() OVER(order by sales) sales_dense_rank
+    
+ FROM orders
