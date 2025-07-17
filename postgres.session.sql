@@ -285,3 +285,16 @@ SELECT
     ROW_NUMBER() OVER(ORDER BY orderid, orderdate) uniqueID
 FROM
     sales.ordersarchive
+
+--Identifying Duplicates and Reoving Them
+SELECT *
+FROM (SELECT
+    orderid, 
+    sales,
+    creationTime,
+    ROW_NUMBER() OVER(PARTITION BY orderid ORDER BY creationTime DESC) rn
+FROM
+    sales.ordersarchive
+)t
+
+WHERE rn > 1
