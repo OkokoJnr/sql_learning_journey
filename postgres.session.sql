@@ -316,3 +316,19 @@ FROM sales.orders
 ) t
 
 
+--cum_dist and per_rank
+--products that falls within 40% of the price
+
+SELECT * FROM
+(
+    SELECT 
+    product,
+    price,
+    CONCAT(CUME_DIST() OVER(ORDER BY price) * 100, '%') AS dist_Rank_percenatge,
+    CONCAT(PERCENT_RANK() OVER(ORDER BY price) * 100, '%') per_rank_percenatge, 
+    PERCENT_RANK() OVER(ORDER BY price) percent_Rank,
+    CUME_DIST() OVER(ORDER BY price) dist_Rank
+ FROM sales.products
+)t
+
+
