@@ -278,3 +278,10 @@ WHERE customers_Rank <= 2
 --     SUM(sales) OVER(PARTITION BY customer_id ORDER BY customer_id DESC) total_sales_date
 -- from orders
 
+--Assigning Unique IDs to the rows of tables
+
+SELECT
+    *,
+    ROW_NUMBER() OVER(ORDER BY orderid, orderdate) uniqueID
+FROM
+    sales.ordersarchive
