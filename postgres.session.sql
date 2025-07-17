@@ -298,3 +298,21 @@ FROM
 )t
 
 WHERE rn > 1
+
+
+--Ntile and its usecase; segmenting data and exporting dataset in batches
+SELECT *,
+ CASE
+        WHEN threebkt = 1 THEN 'High'
+        WHEN threebkt = 2 THEN 'Medium'
+        WHEN threebkt = 1 THEN 'Low'
+        ELSE 'unknown'
+    END
+FROM (SELECT 
+    orderid,
+    sales,
+    NTILE(3) OVER(ORDER BY sales DESC) AS threebkt
+FROM sales.orders
+) t
+
+
