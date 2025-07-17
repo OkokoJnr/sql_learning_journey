@@ -244,4 +244,37 @@ FROM (
 FROM
 sales.ordersarchive
 )t
-WHERE sales_rank <= 3;
+
+--BOTTOM-N-ANALYSIS: find the lowest two customers base on their total sales
+
+-- SELECT * FROM (
+--     SELECT 
+--     customer_id,
+--     sales,
+--     SUM(sales) OVER(PARTITION BY customer_id) total_sales
+-- FROM 
+--     orders
+-- ) t
+-- ORDER BY total_sales ASC
+-- LIMIT 2;
+
+SELECT * FROM (
+    SELECT 
+    customer_id,
+    SUM(sales) total_sales,
+    ROW_NUMBER() OVER(ORDER BY SUM(sales) ASC) customers_Rank
+FROM
+    orders
+GROUP BY customer_id
+) t
+WHERE customers_Rank <= 2
+
+-- select 
+--     ROW_NUMBER() OVER(),
+--     customer_id, 
+--     sales,
+--     SUM(sales) OVER() so,
+--     SUM(sales) OVER(PARTITION BY customer_id) sop,
+--     SUM(sales) OVER(PARTITION BY customer_id ORDER BY customer_id DESC) total_sales_date
+-- from orders
+
