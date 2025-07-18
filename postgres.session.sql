@@ -506,3 +506,10 @@ SELECT
     (SELECT COUNT(*) FROM sales.orders AS o WHERE o.customerid = c.customerid)
 FROM
 sales.customers AS c
+
+--show details of orders made by customers in Germany
+SELECT *
+FROM sales.orders o
+WHERE EXISTS (SELECT 1 from sales.customers c where country='Germany' AND c.customerid = o.customerid)
+
+SELECT * from sales.customers
