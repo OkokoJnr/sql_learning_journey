@@ -434,3 +434,21 @@ SELECT
         ) total_orders
 FROM
     sales.products
+
+--determine customers details and total orders of each customer
+SELECT 
+    c.customerid,
+    c.firstname,
+    c.country,
+    o.total_orders
+FROM
+sales.customers as c 
+LEFT JOIN (
+    SELECT
+    customerid,
+    COUNT(*) total_orders
+FROM
+    sales.orders
+GROUP BY customerid
+) o
+ON o.customerid = c.customerid
