@@ -462,5 +462,39 @@ FROM
 sales.customers as c 
 WHERE c.customerid IN (SELECT customerid FROM sales.orders)
 
+--products that have higher price than average price of all products
 SELECT * from sales.products
 WHERE price >= (SELECT AVG(price) FROM sales.products)
+
+--female employees with salary greater than or equal to ANY male employee
+SELECT
+    employeeid,
+    firstname,
+    gender,
+    salary
+FROM
+    sales. Employees
+WHERE gender = 'F' and salary >= ANY(
+    SELECT
+    salary
+FROM
+    sales. Employees
+WHERE gender = 'M'
+)
+
+
+--male employees with salary greater than or equal to ALL female employee
+SELECT
+    employeeid,
+    firstname,
+    gender,
+    salary
+FROM
+    sales. Employees
+WHERE gender = 'M' and salary >= ALL (
+    SELECT
+    salary
+FROM
+    sales. Employees
+WHERE gender = 'F'
+)
