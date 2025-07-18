@@ -398,3 +398,39 @@ SELECT
 FROM 
     sales.ordersarchive
 
+--rank customers base on their total sales
+--Which of this is prefarable regarding optimization and performance
+SELECT 
+    customerid,
+    SUM(sales) total_sales,
+    RANK() OVER(ORDER BY SUM(sales) DESC)
+FROM 
+    sales.orders
+GROUP BY customerid
+
+SELECT
+    *,
+    RANK() OVER(ORDER BY total_sales DESC)
+FROM
+    (SELECT 
+        customerid,
+        SUM(sales) total_sales
+    FROM 
+        sales.orders
+    GROUP BY customerid) t
+
+--product details and total orders
+SELECT * FROM sales.products
+SELECT 
+    productid,
+    product,
+    price,
+    (
+        SELECT
+            count(orderid) 
+        
+        FROM 
+            sales.orders
+        ) total_orders
+FROM
+    sales.products
