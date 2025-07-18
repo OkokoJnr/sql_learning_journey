@@ -332,3 +332,38 @@ SELECT * FROM
 )t
 
 
+---LAG AND LEAD
+SELECT 
+    order_id,
+    sales,
+    LAG(sales) OVER(ORDER BY sales ASC) prevSales,
+    LEAD(sales) OVER(ORDER BY sales ) nxtSales
+ FROM orders
+
+ --analyze the month-over-month performance by fidning the percentage change in sales between the current and previous month
+
+SELECT 
+    *,
+    ( LAG(monthly_sales) OVER (ORDER BY other_date)- (CAST(monthly_sales AS float))/LAG(monthly_sales) OVER (ORDER BY other_date))
+FROM
+(SELECT
+    EXTRACT(MONTH from order_date) months,
+    SUM(sales) monthly_sales
+FROM orders
+WHERE EXTRACT(MONTH from order_date) IS NOT NULL
+GROUP BY months
+) t
+
+SELECT DATE_PART('month', order_date) AS order_month
+FROM orders;
+
+
+--extarcting month name from date
+SELECT
+    --order_id,
+    TO_CHAR(order_date, 'Month') AS order_month_name,
+    order_date,
+    sales,
+    LAG(sales) OVER(ORDER BY TO_CHAR(order_date, 'Month') DESC )
+FROM orders;
+
