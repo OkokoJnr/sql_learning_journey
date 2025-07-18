@@ -378,3 +378,23 @@ SELECT
     LAST_VALUE(sales) OVER(PARTITION BY productid ORDER BY sales DESC ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING) as lowest1
 FROM
     sales.ordersarchive
+
+
+    --find the products that has a price higher than the average price of all products
+SELECT * FROM(
+        SELECT
+    productid,
+    sales,
+    AVG(sales) OVER() avg_sales
+    FROM 
+        sales.ordersarchive
+) t
+
+WHERE sales > avg_sales
+
+SELECT
+    productid,
+    sales
+FROM 
+    sales.ordersarchive
+
