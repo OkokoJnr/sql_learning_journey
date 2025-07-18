@@ -498,3 +498,11 @@ FROM
     sales. Employees
 WHERE gender = 'F'
 )
+
+--total orders of each customers using correlated subquery
+SELECT 
+    customerid,
+    firstname,
+    (SELECT COUNT(*) FROM sales.orders AS o WHERE o.customerid = c.customerid)
+FROM
+sales.customers AS c
