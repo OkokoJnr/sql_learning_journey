@@ -452,3 +452,15 @@ FROM
 GROUP BY customerid
 ) o
 ON o.customerid = c.customerid
+
+---customers who placed an order
+SELECT 
+    c.customerid,
+    c.firstname,
+    c.country
+FROM
+sales.customers as c 
+WHERE c.customerid IN (SELECT customerid FROM sales.orders)
+
+SELECT * from sales.products
+WHERE price >= (SELECT AVG(price) FROM sales.products)
