@@ -367,3 +367,14 @@ SELECT
     LAG(sales) OVER(ORDER BY TO_CHAR(order_date, 'Month') DESC )
 FROM orders;
 
+--highest and lowest sales for each product
+SELECT
+    productid,
+    sales,
+    --MAX(sales) OVER(PARTITION BY productid ORDER BY sales DESC) HighestSales,
+    --MIN(sales) OVER(PARTITION BY productid ORDER BY sales DESC) LowestSalest,
+    FIRST_VALUE(sales) OVER(PARTITION BY productid ORDER BY sales DESC) as Higest1,
+
+    LAST_VALUE(sales) OVER(PARTITION BY productid ORDER BY sales DESC ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING) as lowest1
+FROM
+    sales.ordersarchive
