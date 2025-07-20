@@ -581,3 +581,21 @@ JOIN cte_customer_segmentation ccs
 ON ccs.customerid = c.customerid
 ORDER BY ccr.customer_rank
 
+
+--Recursive CTE
+--Generate a sequence of numbers from 1 to 20
+WITH RECURSIVE CTE_series_20 AS(
+    --Anchor query
+    SELECT 
+        1 AS myNum
+    UNION ALL 
+    SELECT 
+    --Recursive Query
+    myNum +1
+    FROM CTE_series_20
+    WHERE myNum < 20
+)
+--Main Query
+SELECT * 
+FROM CTE_series_20
+
