@@ -593,9 +593,41 @@ WITH RECURSIVE CTE_series_20 AS(
     --Recursive Query
     myNum +1
     FROM CTE_series_20
-    WHERE myNum < 20
+    WHERE myNum < 2000
 )
 --Main Query
 SELECT * 
 FROM CTE_series_20
 
+
+--Organizational Hierachhy using Recursive CTE
+--Task: Show the employee hierarchy of the company by displaying each employees level within the organizations
+WITH RECURSIVE org_hierachy AS (
+    SELECT 
+        employeeid, 
+        firstname, 
+        department, 
+        managerid,
+        1 AS level
+    FROM 
+    sales.employees
+    WHERE managerid IS NULL
+    UNION ALL
+
+    --Recursive query
+    SELECT 
+        e.employeeid, 
+        e.firstname, 
+        e.department, 
+        e.managerid,
+        oh.level + 1
+    FROM sales.employees e
+    INNER JOIN org_hierachy as oh
+    ON oh.employeeid = e.managerid
+)
+
+--Main Query
+SELECT 
+    *
+FROM 
+    org_hierachy
