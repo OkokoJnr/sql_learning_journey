@@ -515,119 +515,162 @@
 -- SELECT * from sales.customers
 
 
---CTE
---find the total orders for each customers
-WITH cte_total_orders AS (
+-- --CTE
+-- --find the total orders for each customers
+-- WITH cte_total_orders AS (
+-- SELECT
+--     customerid,
+--     COUNT(*) total_orders,
+--     SUM(sales) total_sales
+-- FROM sales.orders
+--     GROUP BY customerid)
+
+
+-- --finding the last order date for each customer
+-- , cte_last_order_date AS (SELECT
+--     customerid,
+--     MAX(orderdate) last_orderdate
+-- FROM
+--     sales.orders
+-- GROUP BY customerid)
+
+-- --Rank customer base on total sales
+-- , cte_Customer_Rank AS (
+--     SELECT 
+--         customerid,
+--         RANK() OVER(ORDER BY total_sales DESC) customer_rank
+--     FROM
+--         cte_total_orders
+-- )
+
+-- --segment customers base on total sales
+-- ,cte_customer_segmentation AS (
+--    SELECT
+--         customerid,
+--         CASE 
+--             WHEN seg = 1 THEN 'TOP'
+--             ELSE 'Low'
+--         END customer_category
+--    FROM (
+--      SELECT 
+--         customerid,
+--         total_sales,
+--         NTILE(2) OVER(ORDER BY total_sales DESC) seg
+--     FROM
+--         cte_total_orders
+--    )
+-- )
+-- --Main Query
+--     SELECT 
+--     c.customerid,
+--     c.firstname,
+--     cts.total_sales,
+--     ccs.customer_category,
+--     ccr.customer_rank,
+--     cts.total_orders,
+--     last_orderdate
+-- FROM
+--     sales.customers c
+-- JOIN cte_total_orders cts
+-- ON cts.customerid = c.customerid
+-- LEFT JOIN cte_last_order_date  clod
+-- ON c.customerid = clod.customerid
+-- JOIN cte_Customer_Rank ccr
+-- ON ccr.customerid = c.customerid
+-- JOIN cte_customer_segmentation ccs
+-- ON ccs.customerid = c.customerid
+-- ORDER BY ccr.customer_rank
+
+
+-- --Recursive CTE
+-- --Generate a sequence of numbers from 1 to 20
+-- WITH RECURSIVE CTE_series_20 AS(
+--     --Anchor query
+--     SELECT 
+--         1 AS myNum
+--     UNION ALL 
+--     SELECT 
+--     --Recursive Query
+--     myNum +1
+--     FROM CTE_series_20
+--     WHERE myNum < 2000
+-- )
+-- --Main Query
+-- SELECT * 
+-- FROM CTE_series_20
+
+
+-- --Organizational Hierachhy using Recursive CTE
+-- --Task: Show the employee hierarchy of the company by displaying each employees level within the organizations
+-- WITH RECURSIVE org_hierachy AS (
+--     SELECT 
+--         employeeid, 
+--         firstname, 
+--         department, 
+--         managerid,
+--         1 AS level
+--     FROM 
+--     sales.employees
+--     WHERE managerid IS NULL
+--     UNION ALL
+
+--     --Recursive query
+--     SELECT 
+--         e.employeeid, 
+--         e.firstname, 
+--         e.department, 
+--         e.managerid,
+--         oh.level + 1
+--     FROM sales.employees e
+--     INNER JOIN org_hierachy as oh
+--     ON oh.employeeid = e.managerid
+-- )
+
+-- --Main Query
+-- SELECT 
+--     *
+-- FROM 
+--     org_hierachy
+
+
+-- --VIEWS
+
 SELECT
-    customerid,
-    COUNT(*) total_orders,
-    SUM(sales) total_sales
-FROM sales.orders
-    GROUP BY customerid)
-
-
---finding the last order date for each customer
-, cte_last_order_date AS (SELECT
-    customerid,
-    MAX(orderdate) last_orderdate
-FROM
-    sales.orders
-GROUP BY customerid)
-
---Rank customer base on total sales
-, cte_Customer_Rank AS (
-    SELECT 
-        customerid,
-        RANK() OVER(ORDER BY total_sales DESC) customer_rank
-    FROM
-        cte_total_orders
-)
-
---segment customers base on total sales
-,cte_customer_segmentation AS (
-   SELECT
-        customerid,
-        CASE 
-            WHEN seg = 1 THEN 'TOP'
-            ELSE 'Low'
-        END customer_category
-   FROM (
-     SELECT 
-        customerid,
-        total_sales,
-        NTILE(2) OVER(ORDER BY total_sales DESC) seg
-    FROM
-        cte_total_orders
-   )
-)
---Main Query
-    SELECT 
-    c.customerid,
-    c.firstname,
-    cts.total_sales,
-    ccs.customer_category,
-    ccr.customer_rank,
-    cts.total_orders,
-    last_orderdate
-FROM
-    sales.customers c
-JOIN cte_total_orders cts
-ON cts.customerid = c.customerid
-LEFT JOIN cte_last_order_date  clod
-ON c.customerid = clod.customerid
-JOIN cte_Customer_Rank ccr
-ON ccr.customerid = c.customerid
-JOIN cte_customer_segmentation ccs
-ON ccs.customerid = c.customerid
-ORDER BY ccr.customer_rank
-
-
---Recursive CTE
---Generate a sequence of numbers from 1 to 20
-WITH RECURSIVE CTE_series_20 AS(
-    --Anchor query
-    SELECT 
-        1 AS myNum
-    UNION ALL 
-    SELECT 
-    --Recursive Query
-    myNum +1
-    FROM CTE_series_20
-    WHERE myNum < 2000
-)
---Main Query
-SELECT * 
-FROM CTE_series_20
-
-
---Organizational Hierachhy using Recursive CTE
---Task: Show the employee hierarchy of the company by displaying each employees level within the organizations
-WITH RECURSIVE org_hierachy AS (
-    SELECT 
-        employeeid, 
-        firstname, 
-        department, 
-        managerid,
-        1 AS level
-    FROM 
-    sales.employees
-    WHERE managerid IS NULL
-    UNION ALL
-
-    --Recursive query
-    SELECT 
-        e.employeeid, 
-        e.firstname, 
-        e.department, 
-        e.managerid,
-        oh.level + 1
-    FROM sales.employees e
-    INNER JOIN org_hierachy as oh
-    ON oh.employeeid = e.managerid
-)
-
---Main Query
-SELECT 
-    *
+    orderdate,
+    EXTRACT(MONTH FROM orderdate) AS order_month,
+    sales,
+        SUM(sales) OVER(PARTITION BY EXTRACT(MONTH FROM orderdate)),
+    SUM(sales) OVER(PARTITION BY EXTRACT(MONTH FROM orderdate) ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)
 FROM 
-    org_hierachy
+    sales.orders
+
+
+SELECT
+    EXTRACT(MONTH FROM orderdate) AS order_month,
+    SUM(Sales) AS total_sales
+FROM
+    sales.orders so2
+GROUP BY order_month;
+
+WITH CTE_monthly_sales AS (
+    SELECT 
+        EXTRACT(MONTH FROM orderdate) AS order_month,
+        SUM(sales)  total_sales,
+        COUNT(orderid) as total_order,
+        SUM(quantity) as total_qty
+    FROM 
+        sales.orders
+    GROUP BY EXTRACT(MONTH FROM orderdate) 
+)
+
+SELECT 
+    order_month,
+    total_sales,
+    total_order,
+    total_qty,
+    SUM(total_sales) OVER(ORDER BY order_month) AS running_total
+FROM 
+    VIEW_monthly_summary;
+
+
+
