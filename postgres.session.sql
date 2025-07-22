@@ -673,4 +673,31 @@ FROM
     VIEW_monthly_summary;
 
 
+--CTAS CREATE TABLE AS SELECT
 
+CREATE TABLE CTAS_table AS (
+    SELECT *
+    FROM sales.orders
+)
+
+--CTAS that shows total number of orders for each month
+DROP TABLE CTAS_total_orders
+CREATE TABLE CTAS_total_orders AS (
+    SELECT
+    EXTRACT(MONTH FROM orderdate) AS order_month,
+    COUNT(orderid)
+FROM sales.orders
+GROUP BY EXTRACT(MONTH FROM orderdate)
+)
+
+SELECT * FROM CTAS_total_orders
+
+
+--TEMPORARY TABLES
+
+CREATE TEMPORARY TABLE temp_total_ordes AS
+    SELECT 
+    *
+FROM sales.orders;
+
+SELECT * FROM temp_total_ordes
