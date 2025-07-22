@@ -25,13 +25,28 @@ WITH cte_total_sales AS (
         RANK() OVER (ORDER BY total_sales DESC) AS customers_rank
     FROM cte_total_sales
 )
+
+--segment customers
+, cte_segment_customers AS (
+    SELECT
+        customerid,
+        total_sales,
+        CASE
+            WHEN total_sales >= 100 THEN 'High'
+            WHEN total_sales >= 50 THEN 'Medium'
+            ELSE 'Low'
+        END category
+    FROM
+        cte_total_sales
+)
 --Main Query
 SELECT 
     c.customerid,
     c.firstname,
     cte_ts.total_sales,
     cte_lod.last_order_date,
-    cte_rc.customers_rank
+    cte_rc.customers_rank,
+    cte_sc.category
 FROM 
     sales.customers c
 LEFT JOIN cte_total_sales cte_ts
@@ -40,3 +55,5 @@ LEFT JOIN cte_last_order_date cte_lod
 ON c.customerid = cte_lod.customerid
 LEFT JOIN cte_rank_customers cte_rc
 ON c.customerid = cte_rc.customerid
+LEFT JOIN cte_segment_customers cte_sc
+ON c.customerid = cte_sc.customerid
