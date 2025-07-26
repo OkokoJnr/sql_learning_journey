@@ -57,3 +57,48 @@ LEFT JOIN cte_rank_customers cte_rc
 ON c.customerid = cte_rc.customerid
 LEFT JOIN cte_segment_customers cte_sc
 ON c.customerid = cte_sc.customerid
+
+--Recursive CTE
+--Generate sequence of 20 numbers
+
+WITH RECURSIVE cte_sequence20 AS (
+    --Anchor query
+    SELECT 0 AS myNum
+    UNION ALL 
+    --Recursive query
+    SELECT 
+        myNum + 2
+    FROM
+        cte_sequence20
+    WHERE myNum < 20
+) 
+
+SELECT * FROM cte_sequence20
+
+--show the employee hierarchy by displaying eac employee's level within the organization
+
+
+WITH RECURSIVE cte_org_hierarchy AS(
+    SELECT 
+        employeeid,
+        firstname,
+        managerid,
+        1 as level
+    FROM
+        sales.employees
+        WHERE managerid IS NULL
+    
+    UNION ALL
+    SELECT
+        e.employeeid,
+        e.firstname,
+        e.managerid,
+    level + 1
+    FROM sales.Employees AS e
+    INNER JOIN cte_org_hierarchy cte_oh
+    ON e.managerid = cte_oh.employeeid    
+)
+SELECT 
+    *
+FROM
+    cte_org_hierarchy

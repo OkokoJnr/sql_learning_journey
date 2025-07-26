@@ -684,10 +684,12 @@ CREATE TABLE CTAS_table AS (
 DROP TABLE CTAS_total_orders
 CREATE TABLE CTAS_total_orders AS (
     SELECT
-    EXTRACT(MONTH FROM orderdate) AS order_month,
-    COUNT(orderid)
-FROM sales.orders
-GROUP BY EXTRACT(MONTH FROM orderdate)
+        EXTRACT(MONTH FROM orderdate) AS order_month,
+        COUNT(orderid)
+    FROM 
+        sales.orders
+    GROUP BY
+        EXTRACT(MONTH FROM orderdate)
 )
 
 SELECT * FROM CTAS_total_orders
